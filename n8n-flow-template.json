@@ -1,0 +1,1014 @@
+{
+  "name": "One News 科技新聞",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2224,
+        768
+      ],
+      "id": "cf47609c-0211-4209-957f-5ac891ee8986",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "title": "=[無偏見報導] {{ $json.title }}",
+        "additionalFields": {
+          "content": "={{ $json.text }}\n\n![image]({{ $json.refs[0].image }})\n\n### 參考閱讀\n[{{ $json['標題'] }},{{ $json['來源與時間'] }}]({{ $json['連結'] }})\n[{{ $json.refs[0].title }}, {{ $json.refs[0].source }}]({{$json.refs[0].link}})\n[{{ $json.refs[1].title }}, {{ $json.refs[1].source }}]({{$json.refs[1].link}})\n[{{ $json.refs[2].title }}, {{ $json.refs[2].source }}]({{$json.refs[2].link}})",
+          "status": "publish",
+          "categories": [
+            3,
+            5,
+            4
+          ],
+          "tags": [
+            6
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        2400,
+        1216
+      ],
+      "id": "1aaff042-ca30-4e4d-9c97-9c903a8c249f",
+      "name": "Wordpress",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "retryOnFail": false,
+      "credentials": {
+        "wordpressApi": {
+          "id": "R6MwDtN8ObJat9N4",
+          "name": "political news lazyinwork"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6,
+              "triggerAtMinute": 40
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -2064,
+        944
+      ],
+      "id": "f73ee230-4038-43cc-a2ab-48a99c4b3432",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "XvU5udJwsszCQwon",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/XvU5udJwsszCQwon",
+          "cachedResultName": "Deep Research From yahoo trend"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "yahoo-news-url": "={{ $json.url }}"
+          },
+          "matchingColumns": [
+            "yahoo-news-url"
+          ],
+          "schema": [
+            {
+              "id": "yahoo-news-url",
+              "displayName": "yahoo-news-url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -1664,
+        720
+      ],
+      "id": "9c8fbe5e-215e-4f65-aa42-ada0dcc43332",
+      "name": "Call 'Research by Yahoo News'",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -512,
+        1584
+      ],
+      "id": "1d72e1ac-4e22-4f81-8f1a-fc8ba4b63c68",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "9AqWOsJ0Nv0k5OkT",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a3b4bef2-c4b5-4cf6-b41e-4b026c6a2dad",
+              "name": "title",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1776,
+        1392
+      ],
+      "id": "0a615de9-a95e-4222-a9f0-83f3610c7c39",
+      "name": "rename"
+    },
+    {
+      "parameters": {
+        "content": "https://lazyinwork.com/2026/01/14/%e7%84%a1%e5%81%8f%e8%a6%8b%e5%a0%b1%e5%b0%8e%e5%bd%88%e5%8a%be%e6%a1%88%e8%83%8c%e6%99%af%e3%80%81%e7%88%ad%e8%ad%b0%e3%80%81%e7%a8%8b%e5%ba%8f%e3%80%81%e5%bd%b1%e9%9f%bf%e5%8f%8a%e5%9c%8b%e9%9a%9b/#google_vignette",
+        "height": 240,
+        "width": 704
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        112,
+        960
+      ],
+      "typeVersion": 1,
+      "id": "c809fad9-45b5-4138-b317-0b7c8c81b2de",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -592,
+        1024
+      ],
+      "id": "e2930dd9-8341-43bf-86ad-9c7942e91ff5",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=以下是參考內容：\n{{ $json.body[0] }}\n\n以下是次要參考內容：\n{{ $json.refs.toJsonString()}}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "我想寫一篇中立深度報導，請給我五個小節標題規劃和編寫策略，小節之間使用`----`來切割，用markdown格式直接輸出結果給我，不要有其餘內容。\n輸出範例：\n`<小節標題>` 小節標題....\n`<小節摘要>` 小節摘要....\n`<小節核心句子>` 小節核心句子....\n----\n`<小節標題>` 小節標題....\n`<小節摘要>` 小節摘要....\n`<小節核心句子>` 小節核心句子....\n\n"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -960,
+        576
+      ],
+      "id": "d4367d29-9929-45a2-a10f-8e45fc42bd36",
+      "name": "生成文章編輯規劃"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "sections",
+        "options": {
+          "destinationFieldName": "write_prompt"
+        }
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        576
+      ],
+      "id": "104d6580-5b0a-4d40-b4d6-d5bea97aeba4",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "numberInputs": 3,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2112,
+        1184
+      ],
+      "id": "350764fe-4336-4118-aab2-59aa0a755788",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -96,
+        832
+      ],
+      "id": "cd61acae-e525-477f-9461-124dbeb9f7d9",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "write_prompt.text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        848,
+        1328
+      ],
+      "id": "1b5253c8-abb0-4046-a34b-349b711f439c",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=以下是編寫大綱：\n{{ $json.write_prompt.toJsonString() }}\n以下是參考內容：\n{{ $json.body[0] }}\n{{ $json.refs.toJsonString() }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "遵守媒體道德與社會責任原則，基於資料內容，統整後撰寫一篇報導。以下提供更多輸出細節\n\n請根據以下規範撰寫一篇深度報導文章：\n\n## 輸出格式：\n請以部落格文風，深入敘述事件內容，要求資訊真實、來源可信，並盡可能引用來源（無需附上網址）。\n\n## 撰寫原則：\n- 內容為字數約在300-500字之間的單一段落，不需分段和分章節\n- 文章將被直接用作報導，**禁止包含任何對話開場、系統說明、產製說明或其他非正文內容**\n- 避免無謂的開場白與結尾語，**直接切入主題**\n- 全文使用**繁體中文**，必要時可以加入英文字母，不使用其他語言\n- 採用台灣人日常可理解的用語，避免過度專業術語\n- 所有內容須符合媒體報導標準，**不得煽動情緒，資訊需查證且可信**\n- **禁止提供網址**\n- 文章須具備**獨特觀點**，不僅是翻譯或重述他人觀點\n- 以下觀點可以強化[內文]深度與呈現（用敘述的方式不是列點說明，維持最後產出是單一段落）：\n  - **事件癥結點：** 提出事件造成社會分歧的原因\n  - **參考資料與本文對照：** 梳理文章中引用的資料來源，並對照其在文中的應用，說明如何支持文章觀點\n  - **參考資料的媒體立場：** 提出事件報導的媒體採用哪種立場，是否有特定立場的影響\n\n\n\n\n"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -448,
+        1024
+      ],
+      "id": "acdedecc-2758-42cd-9505-0ac437ad013a",
+      "name": "生成小節"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.concatenated_write_prompt_text }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "總結重點，給出一個最終的標題(25字內)\n\n## 撰寫原則：\n- 文章將被直接用作爲標題，**禁止包含任何對話開場、系統說明、產製說明或其他非正文內容**\n- 避免無謂的開場白與結尾語，**直接切入主題**\n- 使用**繁體中文**，採用台灣人日常可理解的用語，避免過度專業術語\n- 作為有吸引力的部落格標題，包含重點專有名詞，例如人事物和行為狀態\n\n\n\n\n"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        1152,
+        1408
+      ],
+      "id": "b427bb58-a38b-4182-bdbe-762a20c8b35a",
+      "name": "生成文章標題"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 取得輸入文字\nconst raw = $json.text ?? $json.content ?? $json.data ?? '';\n\nif (!raw || typeof raw !== 'string') {\n  return [{ json: { error: 'No input text found.' } }];\n}\n\n// 1. 清理 Markdown 標記 (移除開頭的 ```markdown 和結尾的 ```)\n// 同時處理 \\n 的轉換 (視 n8n 上游資料來源而定，有時需要，有時不需要，這裡保留以防萬一)\nlet text = raw.replace(/\\\\n/g, '\\n'); \ntext = text.replace(/^```[a-zA-Z]*\\n?/, '').replace(/\\n?```$/, '').trim();\n\n// 2. 根據 \"----\" 進行切割\n// 使用 Regex 兼容前後可能有換行或空白的情況\nconst blocks = text\n  .split(/\\n\\s*-{4,}\\s*\\n/g)\n  .map(b => b.trim())\n  .filter(Boolean); // 過濾掉空字串\n\n// 3. 定義提取內容的 Helper 函數\nfunction getTagValue(block, tagName) {\n  // Regex 解釋：\n  // <標籤名稱> 接著任意空白 \\s* 接著擷取內容 (.*) 直到行尾\n  const regex = new RegExp(`<${tagName}>\\\\s*(.*)`);\n  const match = block.match(regex);\n  return match ? match[1].replace('`','').trim() : null;\n}\n\n// 4. 解析每一個區塊\nconst sections = blocks.map((block, idx) => {\n  // 提取各欄位\n  const title = getTagValue(block, '小節標題');\n  const summary = getTagValue(block, '小節摘要');\n  const coreSentence = getTagValue(block, '小節核心句子');\n\n  return {\n    section_index: idx + 1,      // 自動產生序號 1, 2, 3...\n    subsection_title: title,\n    subsection_summary: summary,\n    subsection_core_sentence: coreSentence,\n    // 如果需要保留原始區塊內容供除錯，可取消下面註解\n    // raw_block: block \n  };\n});\n\n// 5. 回傳結果\n// 這裡維持你原本的結構：回傳「一筆」資料，裡面包含 sections 陣列\nreturn [\n  {\n    json: {\n      section_count: sections.length,\n      sections: sections,\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -688,
+        576
+      ],
+      "id": "1b54c011-1316-441f-a129-63fceb564ebb",
+      "name": "切割小節"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.write_prompt['text'] = item.json.text;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        1056
+      ],
+      "id": "302ab4b9-c1a5-47f9-ba5d-d581ac7796f7",
+      "name": "整合資料"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\n\nlet bodies = \"\";\nfor (const item of $input.all()) {\n  bodies+=\"## \"\n  bodies+=item.json.write_prompt.subsection_title\n  bodies+=\"\\n\\n\"\n  bodies+=item.json.write_prompt.text\n  bodies+=\"\\n\\n ---- \\n\\n\"\n}\n\nreturn {\n  \"post_content\": bodies\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        848,
+        1056
+      ],
+      "id": "81e6f713-e118-42d5-aefe-85fbfe2036a9",
+      "name": "節錄文章內容"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.post_content }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "精修使用者給的部落格內容。\n\n## 撰寫原則：\n- 不要過多降低字數，以維持前後文章流暢度為準。\n- 避免無謂的開場白與結尾語，**直接切入主題**\n- 使用**繁體中文**，採用台灣人日常可理解的用語，避免過度專業術語\n- 不應包含在不同段落中重複性的資訊\n- 維持markdown格式\n\n\n\n\n"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        1296,
+        944
+      ],
+      "id": "f37e21d0-1c7a-4917-b1b6-143bb245057d",
+      "name": "生成文章標題1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "bd2cbfd8-7b0e-4b05-958b-0a4bad27fb08",
+              "leftValue": "={{ $json.refs }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1376,
+        736
+      ],
+      "id": "9ab7376a-6a28-4b55-be94-9c95bec58710",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body[0] }}\n",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "# Role: 資深科技趨勢與社會觀察家\n\n請閱讀提供的[科技新聞文本]，並分為「技術事實摘要」與「社會影響評估」兩個階段進行輸出。\n\n## 第一階段：去行銷化與事實摘要\n請屏除原文中的「行銷話術」、「誇飾形容」（如：史無前例、震撼彈、救星）與「未經證實的願景」，僅針對**現階段已確認的技術與事實**進行濃縮（約 300-500 字）。\n*注意：此部分請過濾掉商業炒作，還原技術本質。*\n\n* **核心技術 (What)：** 具體發表了什麼產品、算法或政策？\n* **關鍵突破 (How)：** 與過去技術相比，具體的差異或改進機制為何？\n* **應用場景 (Where/When)：** 預計何時落地？應用於哪些領域？\n* **主導者 (Who)：** 哪家公司或機構？\n\n## 第二階段：社會影響力與倫理評估\n請跳脫技術崇拜，改以「人文與社會視角」批判性分析此新聞。**皆必須引用原文片段**作為佐證，並探討其潛在的漣漪效應。\n\n### 1. 影響力總體定調\n給出一個明確的判斷（如：破壞式創新 / 產業升級 / 雙面刃 / 炒作大於實質 / 潛在倫理風險），並簡述原因。\n\n### 2. 關鍵影響分析（舉證）\n請挑選 3-5 個關鍵句或段落，針對**「勞動就業、隱私權利、貧富差距、人類行為、環境永續」**等面向進行剖析：\n\n* **「（在此放入原文片段）」**\n    * **【涉及層面】：** （例如：自動化取代人力、數據隱私隱憂、數位落差、注意力經濟...）\n    * **【社會衝擊分析】：** 如果這項技術普及，對社會結構或特定族群（贏家與輸家）會造成什麼具體改變？是賦能還是剝削？\n\n### 3. 盲點與反思\n針對文中**「未提及」**或**「輕描淡寫」**的潛在風險進行補充。（例如：新聞只提效率提升，卻未提能源消耗；只提便利性，卻未提個資讓渡）。\n\n## 撰寫規範\n- **語言：** 繁體中文"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.5,
+      "position": [
+        -1168,
+        1344
+      ],
+      "id": "4546ee5c-a0ce-4131-a41b-c7f1d8842493",
+      "name": "生成快訊"
+    },
+    {
+      "parameters": {
+        "title": "=[媒體檢核] {{ $json[\"標題\"] }}",
+        "additionalFields": {
+          "content": "={{ $json.text }}\n\n![image]({{ $json.imgs[0] }})\n\n### 參考閱讀\n[{{ $json['標題'] }},{{ $json['來源與時間'] }}]({{ $json['連結'] }})",
+          "status": "publish",
+          "categories": [
+            3,
+            10,
+            9
+          ],
+          "tags": "={{ [$json.id] }}"
+        }
+      },
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        992,
+        1792
+      ],
+      "id": "0c395a93-69ee-4372-80c0-9602b074b16a",
+      "name": "Wordpress2",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "retryOnFail": false,
+      "credentials": {
+        "wordpressApi": {
+          "id": "R6MwDtN8ObJat9N4",
+          "name": "political news lazyinwork"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -640,
+        1264
+      ],
+      "id": "f432edfd-2474-4f4a-aaea-a9d4705dce7a",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://news.lazyinwork.com/wp-json/wp/v2/tags",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=name",
+              "value": "={{ $json[\"來源與時間\"].split(\" \")[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -96,
+        1712
+      ],
+      "id": "2b870510-5192-424d-ad01-868b3c7f66ef",
+      "name": "WP new tag",
+      "alwaysOutputData": true,
+      "credentials": {
+        "wordpressApi": {
+          "id": "R6MwDtN8ObJat9N4",
+          "name": "political news lazyinwork"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://news.lazyinwork.com/wp-json/wp/v2/tags?search={{ $('Merge3').item.json[\"來源與時間\"].split(\" \")[0] }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "wordpressApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        128,
+        1776
+      ],
+      "id": "717cc458-f360-430a-887e-22164b70b175",
+      "name": "WP tags",
+      "alwaysOutputData": false,
+      "credentials": {
+        "wordpressApi": {
+          "id": "R6MwDtN8ObJat9N4",
+          "name": "political news lazyinwork"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        480,
+        1776
+      ],
+      "id": "9b5fc36a-e666-4013-8244-f34a45167703",
+      "name": "Merge4"
+    },
+    {
+      "parameters": {
+        "title": "=[科技奇點]{{ $json.title }}",
+        "additionalFields": {
+          "authorId": 3,
+          "content": "={{ $json.text }}\n\n![image]({{ $json.refs[0].image }})\n\n### 參考閱讀\n[{{ $json['標題'] }},{{ $json['來源與時間'] }}]({{ $json['連結'] }})\n[{{ $json.refs[0].title }}, {{ $json.refs[0].source }}]({{$json.refs[0].link}})\n[{{ $json.refs[1].title }}, {{ $json.refs[1].source }}]({{$json.refs[1].link}})\n[{{ $json.refs[2].title }}, {{ $json.refs[2].source }}]({{$json.refs[2].link}})",
+          "status": "publish",
+          "categories": [
+            165,
+            164,
+            196
+          ],
+          "tags": [
+            176,
+            180
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        2448,
+        1472
+      ],
+      "id": "eaa8f615-995f-41fe-bd3d-7c35a5b4fdab",
+      "name": "Wordpress1",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "retryOnFail": false,
+      "credentials": {
+        "wordpressApi": {
+          "id": "iZOhiCDMBSaBHq16",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "title": "=[科技快訊]{{ $json[\"標題\"] }}",
+        "additionalFields": {
+          "authorId": 3,
+          "content": "={{ $json.text }}\n\n![image]({{ $json.imgs[0] }})\n\n### 參考閱讀\n[{{ $json['標題'] }},{{ $json['來源與時間'] }}]({{ $json['連結'] }})",
+          "status": "publish",
+          "categories": [
+            165,
+            164,
+            196
+          ],
+          "tags": [
+            176,
+            180
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.wordpress",
+      "typeVersion": 1,
+      "position": [
+        736,
+        1792
+      ],
+      "id": "57223934-ec56-4b52-8243-9b9d21b61f33",
+      "name": "Wordpress3",
+      "alwaysOutputData": true,
+      "executeOnce": true,
+      "retryOnFail": false,
+      "credentials": {
+        "wordpressApi": {
+          "id": "iZOhiCDMBSaBHq16",
+          "name": "Wordpress account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3ecaa424-d4f5-431c-8df3-03313ad9fdd5",
+              "name": "url",
+              "value": "https://tw.news.yahoo.com/technology/archive",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1808,
+        720
+      ],
+      "id": "1481540a-f370-4e5b-8711-960e0f38ea81",
+      "name": "科技主題"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "科技主題",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wordpress": {
+      "main": [
+        []
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "科技主題",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Research by Yahoo News'": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "生成小節",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "生成文章標題",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "生成文章編輯規劃",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "生成文章標題1",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "生成快訊",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "生成文章編輯規劃": {
+      "main": [
+        [
+          {
+            "node": "切割小節",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "生成小節",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "rename": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Wordpress1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "整合資料",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "生成文章標題",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "生成小節": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "生成文章標題": {
+      "main": [
+        [
+          {
+            "node": "rename",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "切割小節": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "整合資料": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "節錄文章內容",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "節錄文章內容": {
+      "main": [
+        [
+          {
+            "node": "生成文章標題1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "生成文章標題1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "生成文章編輯規劃",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 2
+          }
+        ],
+        [
+          {
+            "node": "生成快訊",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "WP new tag",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "生成快訊": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WP new tag": {
+      "main": [
+        [
+          {
+            "node": "WP tags",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Wordpress3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WP tags": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "科技主題": {
+      "main": [
+        [
+          {
+            "node": "Call 'Research by Yahoo News'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Taipei",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "48d166a7-3a03-459f-80ae-4122aa5ce4aa",
+  "meta": {
+    "instanceId": "eb32d7e43aad5aabbd687cb981a6b26a4cb158df1e21e6efdc0f6d0c03fa0543"
+  },
+  "id": "bAKdHhllt7ipOC7e",
+  "tags": [
+    {
+      "updatedAt": "2026-01-28T23:51:21.198Z",
+      "createdAt": "2026-01-28T23:51:21.198Z",
+      "id": "M0wzhSiISiHO0YEE",
+      "name": "on"
+    },
+    {
+      "updatedAt": "2026-01-28T23:53:24.776Z",
+      "createdAt": "2026-01-28T23:53:24.776Z",
+      "id": "i2Tl9Kfrr4XMbmVa",
+      "name": "lazyinwork.com"
+    },
+    {
+      "updatedAt": "2026-01-28T23:53:45.491Z",
+      "createdAt": "2026-01-28T23:53:45.491Z",
+      "id": "4wpVoVZYGyYW6Iq2",
+      "name": "yahoo news"
+    }
+  ]
+}
